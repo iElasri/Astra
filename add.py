@@ -9,7 +9,7 @@ Copy with credits
 
 # import libraries
 from telethon.sync import TelegramClient
-from telethon.tl.types import InputPeerChannel
+from telethon.tl.types import InputPeerChannel, ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import PeerFloodError, UserPrivacyRestrictedError, PhoneNumberBannedError, ChatAdminRequiredError
 from telethon.errors.rpcerrorlist import ChatWriteForbiddenError, UserBannedInChannelError, UserAlreadyParticipantError, FloodWaitError
 from telethon.tl.functions.channels import InviteToChannelRequest
@@ -209,7 +209,13 @@ for acc in to_use:
     #c.get_dialogs()
     try:
         members = []
+        #the following fragments are to not scrap admins
+        admins = c.get_participants(scraped_grp_entity, aggressive=True, filter=ChannelParticipantsAdmins)
+        admins = list(map(lambda x: x.username, admins))  # get a list of the admins
+
         members = c.get_participants(scraped_grp_entity, aggressive=True)
+        members = list(filter(lambda x: (x.username not in admins), members))
+
     except Exception as e:
         print(f'{error}{r} Couldn\'t scrape members')
         print(f'{error}{r} {e}')
@@ -222,6 +228,8 @@ for acc in to_use:
     print(f'{info}{lg} Start: {w}{index}')
     #adding_status = 0
     peer_flood_status = 0
+    restrictions = [m.restricted for m in members[index:stop]]
+    print(restrictions)
     for user in members[index:stop]:
         index += 1
         if peer_flood_status == 10:
@@ -239,6 +247,7 @@ for acc in to_use:
                 c(AddChatUserRequest(target_details.id, user, 42))
             user_id = user.first_name
             target_title = target_entity.title
+            print(user.restricted)
             print(f'{plus}{grey} User: {cy}{acc_name}{lg} -- {cy}{user_id} {lg}--> {cy}{target_title}')
             #print(f'{info}{grey} User: {cy}{acc_name}{lg} -- Sleep 1 second')
             adding_status += 1
