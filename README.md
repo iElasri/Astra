@@ -14,6 +14,22 @@
 
 <b> For full tutorial and important information, refer to ,<a href='https://github.com/Cryptonian007/Astra/blob/main/how_to_use.txt'>how_to_use.txt</a> </b>
 
+ * Create a configuration file named *config.ini* in the root directory
+
+```
+touch config.ini
+```
+* Add your username and token
+  
+>[myTelegram]
+>api_id = 
+>api_hash = 
+
+>[sms-activate.ru]
+>apikey = 
+>api_url = https://sms-activate.ru/stubs/handler_api.php 
+  
+  
 # Features ♨️
 
 * No need of API Id and API hash- It requires only phone numbers
