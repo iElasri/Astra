@@ -70,6 +70,7 @@ f = open('vars.txt', 'rb')
 while True:
     try:
         accounts.append(pickle.load(f))
+        print(accounts)
     except EOFError:
         break
 
