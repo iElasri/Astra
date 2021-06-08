@@ -60,13 +60,12 @@ def clr():
 
 def phone_code_callback(order_id):
     start_time = datetime.now()
-    print(str(start_time) + " Waiting for Actication Code.")
+    print(" Waiting for Activation Code!")
     while True:
-        sleep(10)
+        sleep(5)
         status = sms.getStatus(order_id)["status"]
         elapsed = (datetime.now() - start_time).total_seconds()
-        print('\r')
-        print(str(elapsed) + "Seconds :" + status)
+        print(str(elapsed) + " Seconds :" + status)
         if elapsed > 180:
             sms.setStatus(order_id, 8)
             raise Exception("Phone Code TimeOut! > 3min")
@@ -96,7 +95,7 @@ while True:
             new_accs.append(parsed_number)
 
             print(f'\n{lg} [i] Saved the {phone_number} in vars.txt')
-            clr()
+            #clr()
             print(f'\n{lg} [*] Logging in from new accounts\n')
             for number in new_accs:
                 c = TelegramClient(f'sessions/{number}', api_id, api_hash)  # Change his api and hash
@@ -106,11 +105,14 @@ while True:
                     print(f'{lg}[+] Login successful')
                     c.disconnect()
                 except Exception as e:
-                    print(e)
+                    if os.path.exists("sessions/"+number + ".session"):
+                        os.remove("sessions/"+number + ".session")
+                    if os.path.exists("sessions/" + number + ".session-journal"):
+                        os.remove("sessions/" + number + ".session-journal")
                     print(f'\n{lg} [*] {e} \n')
+                    print(f'\n{lg} [i] Removing {phone_number} in vars.txt')
 
             input(f'\n Press enter to goto main menu...')
-
         g.close()
     elif a == 1:
         new_accs = []
@@ -237,4 +239,3 @@ while True:
         clr()
         banner()
         exit()
-
