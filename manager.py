@@ -65,12 +65,13 @@ def phone_code_callback(order_id):
         sleep(10)
         status = sms.getStatus(order_id)["status"]
         elapsed = (datetime.now() - start_time).total_seconds()
-        print(str(elapsed) + "Seconds :" + status, end='\r')
+        print('\r')
+        print(str(elapsed) + "Seconds :" + status)
         if elapsed > 180:
-            sms.setStatus(order_id, 'STATUS_CANCEL')
-            return -1
+            sms.setStatus(order_id, 8)
+            raise Exception("Phone Code TimeOut! > 3min")
         elif status == "STATUS_CANCEL":
-            return -1
+            raise Exception("Sorry, sms.Activate Canceled Phone Number Retry!")
         elif status == "STATUS_OK":
             return sms.getStatus(order_id)['code']
 
@@ -106,7 +107,7 @@ while True:
                     c.disconnect()
                 except Exception as e:
                     print(e)
-                    print(f'\n{lg} [*] An Error Happened Number Not registred \n')
+                    print(f'\n{lg} [*] {e} \n')
 
             input(f'\n Press enter to goto main menu...')
 
@@ -236,3 +237,4 @@ while True:
         clr()
         banner()
         exit()
+
